@@ -1,0 +1,48 @@
+{
+    "version": "1.5.0",
+    "description": "A small friend on your desktop that watches your AI agents.",
+    "homepage": "https://niranjand.in/nibi/",
+    "license": {
+        "identifier": "Freeware",
+        "url": "https://niranjand.in/nibi/license/"
+    },
+    "notes": [
+        "Nibi is installed with its own per-user installer in %LOCALAPPDATA%\\Nibi and is in the Start menu.",
+        "Your history and settings live in %APPDATA%\\Nibi and are kept by 'scoop uninstall nibi'."
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/Niranjan266/nibi-releases/releases/download/v1.5.0/Nibi_1.5.0_x64-setup.exe#/setup.exe",
+            "hash": "96ca03543cfbe9189efbf96119f3072ca2d6dd269e25aad512b2076f83488461"
+        }
+    },
+    "installer": {
+        "script": [
+            "$p = Start-Process -FilePath \"$dir\\setup.exe\" -ArgumentList '/S' -Wait -PassThru",
+            "Remove-Item \"$dir\\setup.exe\" -ErrorAction SilentlyContinue",
+            "if ($p.ExitCode -ne 0) { throw \"Nibi's installer stopped with code $($p.ExitCode).\" }"
+        ]
+    },
+    "uninstaller": {
+        "script": [
+            "if ($cmd -ne 'update') {",
+            "    $u = \"$env:LOCALAPPDATA\\Nibi\\uninstall.exe\"",
+            "    if (Test-Path $u) {",
+            "        Start-Process -FilePath $u -ArgumentList '/S' -Wait",
+            "        $deadline = (Get-Date).AddSeconds(60)",
+            "        while ((Test-Path $u) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }",
+            "    }",
+            "}"
+        ]
+    },
+    "checkver": {
+        "github": "https://github.com/Niranjan266/nibi-releases"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/Niranjan266/nibi-releases/releases/download/v$version/Nibi_$version_x64-setup.exe#/setup.exe"
+            }
+        }
+    }
+}
